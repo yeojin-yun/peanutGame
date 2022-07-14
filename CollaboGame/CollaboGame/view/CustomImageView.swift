@@ -21,6 +21,7 @@ class CustomImageView: UIImageView {
     }
     func setLabel(title: String) {
         self.addSubview(quizTitle)
+        quizTitle.numberOfLines = 0
         quizTitle.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([

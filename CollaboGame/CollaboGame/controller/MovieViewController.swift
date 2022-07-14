@@ -28,6 +28,7 @@ class MovieViewController: UIViewController {
     }
 //MARK: - Data
     private func loadImage(imageUrl: String) {
+        
         let urlString = imageUrl
         guard let url = URL(string: urlString) else { return }
         
@@ -41,7 +42,9 @@ class MovieViewController: UIViewController {
             
             // 작업의 결과물을 이미로 표시 (메인큐)
             DispatchQueue.main.async {
-                self.movieImageView.image = UIImage(data: data)
+                print(data)
+                print(UIImage(data: data))
+                self.mainImageView.image = UIImage(data: data)
             }
         }
     }
@@ -49,45 +52,40 @@ class MovieViewController: UIViewController {
 
 //MARK: - Selector
 extension MovieViewController {
-    @objc
-    func answerButton(_ sender: UIButton) {
-        randomMovieTitle()
-        switch sender.currentImage {
-        case ButtonImage.startImage:
-            startButton.setImage(ButtonImage.nextQuestionImage, for: .normal)
-            APIManager.shared.requestMovie(word: qAndAText, year: year) { response in
-                switch response {
-                case .success(let data):
-                    self.loadImage(imageUrl: data.items[0].image)
-                    print(data.items)
-                case .failure(let error):
-                    print(error.localizedDescription)
+    @objc func startBtnTapped(_ sender: UIButton) {
+        self.randomMovieTitle()
+        APIManager.shared.requestMovie(word: qAndAText, year: year) { [weak self] response in
+            switch response {
+            case .success(let data):
+                guard let weakSelf = self else { return }
+                switch sender.currentImage {
+                case ButtonImage.startImage:
+                    self?.startButton.setImage(ButtonImage.nextQuestionImage, for: .normal)
+                    self?.mainImageView.quizTitle.text = MovieLine.shared.movieA[self?.qAndAText ?? "타짜"]
+                case ButtonImage.nextQuestionImage:
+                    self?.mainImageView.quizTitle.text = MovieLine.shared.movieA[self?.qAndAText ?? "타짜"]
+                case ButtonImage.answerImage:
+//                    self?.mainImageView.image = nil
+//                    self?.mainImageView.quizTitle.text = ""
+                    self?.loadImage(imageUrl: data.items[0].image)
+                default:
+                    break
                 }
+                
+            case .failure(let error):
+                print(error.localizedDescription)
             }
-        case ButtonImage.nextQuestionImage:
-            randomMovieTitle()
-            APIManager.shared.requestMovie(word: qAndAText, year: year) { response in
-                switch response {
-                case .success(let data):
-                    self.loadImage(imageUrl: data.items[0].image)
-                    print(data.items)
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            }
-        case ButtonImage.answerImage:
-            print("")
-        default:
-            break
         }
+        
+        
     }
     func randomMovieTitle() {
         guard let randomTitle = MovieLine.shared.yearMovie.keys.randomElement() else { return }
         qAndAText = randomTitle
-        year = MovieLine.shared.yearMovie[randomTitle]
-        print("---\(randomTitle)-----")
+        year = MovieLine.shared.yearMovie[randomTitle] ?? 1
+        print(qAndAText)
+        print(year)
     }
-    
 }
 
 //MARK: - UI
@@ -99,7 +97,8 @@ extension MovieViewController {
     }
     
     func addTarget() {
-        startButton.addTarget(self, action: #selector(answerButton(_:)), for: .touchUpInside)
+        startButton.addTarget(self, action: #selector(startBtnTapped(_:)), for: .touchUpInside)
+        rightAnswerButton.addTarget(self, action: #selector(startBtnTapped(_:)), for: .touchUpInside)
     }
     
     func setBasic() {
@@ -113,6 +112,7 @@ extension MovieViewController {
         movieImageView.layer.borderColor = UIColor(red:0.98, green:0.96, blue:0.43, alpha:1.0).cgColor
         movieImageView.layer.borderWidth = 5.0
         movieImageView.layer.masksToBounds = true
+        movieImageView.backgroundColor = .yellow
     }
 
     func setLayout() {
