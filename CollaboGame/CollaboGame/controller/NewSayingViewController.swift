@@ -17,6 +17,11 @@ final class NewSayingViewController: UIViewController {
     private let progressBar = CustomProgressBar()
     private var timerLabel = UILabel()
     
+    private var timer = Timer()
+    private var secondRemaining: Int = 0
+    
+    private let limitTime = 30 // 게임 시간 = 타이머 시간
+    
     private var currentQuestion = ""
     private var currentAnswer = ""
     
@@ -35,53 +40,26 @@ extension NewSayingViewController {
     @objc
     func answerButton(_ sender: UIButton) {
         
-        //        if sender.currentTitle == "시작하기" {
-        //            startButton.setTitle("정답확인", for: .normal)
-        //            startButton.setTitleColor(.yellow, for: .normal)
-        //            qAndAText = NewSaying.shared.newSayingQ["\(qaTitle[0])"]?.randomElement() ?? ""
-        //            print(qAndAText)
-        //            newSayingLabel.text = qAndAText
-        //            newSayingView.isHidden = true
-        //        } else if sender.currentTitle == "정답확인" {
-        //            titleLabel.text = qAndAText
-        //            titleLabel.textColor = UIColor(red:0.98, green:0.96, blue:0.43, alpha:1.0)
-        //            newSayingLabel.textColor = UIColor(red:0.98, green:0.96, blue:0.43, alpha:1.0)
-        //            startButton.setTitle("다음문제", for: .normal)
-        //
-        //            let selected =  NewSaying.shared.newSayingA[qAndAText] ?? ""
-        //            unSelected = selected
-        //            newSayingLabel.text = "\(unSelected)"
-        //
-        //            startButton.setTitleColor(CustomColor.btnTextColor, for: .normal)
-        //        } else if sender.currentTitle == "다음문제" {
-        //            titleLabel.text = "신조어"
-        //            titleLabel.textColor = CustomColor.mainTextColor
-        //            newSayingLabel.textColor = CustomColor.mainTextColor
-        //            startButton.setTitle("정답확인", for: .normal)
-        //            qAndAText = NewSaying.shared.newSayingQ["\(qaTitle[0])"]?.randomElement() ?? ""
-        //            startButton.setTitleColor(UIColor(red:0.98, green:0.96, blue:0.43, alpha:1.0), for: .normal)
-        //            newSayingLabel.text = qAndAText
-        //            newSayingView.isHidden = true
-        //        }
-        //
-        
     }
+    
     @objc func buttonTapped(_ sender: UIButton) {
         
         switch sender.currentImage {
         case ButtonImage.startImage:
             startButton.setImage(ButtonImage.nextQuestionImage, for: .normal)
-            //timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(update), userInfo: nil, repeats: true)
+            timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(update), userInfo: nil, repeats: true)
             timerLabel.isHidden = true
             progressBar.isHidden = false
             answerLabel.isHidden = true
             getRandomNewSaying()
             mainImageView.quizTitle.text = currentQuestion
+            rightAnswerButton.isEnabled = false
         case ButtonImage.nextQuestionImage:
             getRandomNewSaying()
             mainImageView.quizTitle.text = currentQuestion
             answerLabel.isHidden = true
             //timer.invalidate()
+            rightAnswerButton.isEnabled = true
         case ButtonImage.answerImage:
             answerLabel.isHidden = false
             answerLabel.text = currentQuestion
@@ -97,7 +75,46 @@ extension NewSayingViewController {
         currentAnswer = NewSaying.shared.newSayingA[randomQuestion] ?? "낄 때 끼고 빠질 때 빠져라"
     }
     
+    @objc func update() {
+        if secondRemaining < limitTime {
+            secondRemaining += 1
+            let percentage = Float(secondRemaining) / Float(limitTime)
+            progressBar.setProgress(Float(percentage), animated: true)
+            print(secondRemaining)
+        } else {
+            showAlert()
+            timer.invalidate()
+        }
+    }
     
+    func showAlert() {
+        print("alert")
+        let alert = UIAlertController(title: "게임 끝!", message: "결과를 확인하시겠습니까?", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "결과보기", style: .default) { [weak self] _ in
+            self?.answerLabel.text = ""
+            self?.timer.invalidate()
+            self?.startButton.setImage(ButtonImage.startImage, for: .normal)
+            self?.mainImageView.quizTitle.text = "신조어"
+            self?.secondRemaining = 0
+            self?.progressBar.progress = 0.0
+            self?.progressBar.isHidden = true
+            self?.timerLabel.isHidden = false
+        }
+        let cancelAction = UIAlertAction(title: "다시하기", style: .cancel) { [weak self] _ in
+            self?.startButton.setTitle("시작하기", for: .normal)
+            self?.timer.invalidate()
+            self?.mainImageView.quizTitle.text = "신조어"
+            self?.secondRemaining = 0
+            self?.startButton.setImage(ButtonImage.startImage, for: .normal)
+            self?.progressBar.progress = 0.0
+            self?.answerLabel.text = ""
+            self?.progressBar.isHidden = true
+            self?.timerLabel.isHidden = false
+        }
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true)
+    }
 }
 //MARK: - UI
 extension NewSayingViewController {

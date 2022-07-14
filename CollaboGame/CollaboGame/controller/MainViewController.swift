@@ -22,6 +22,8 @@ class MainViewController: UIViewController {
     
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
+    let randomLottery = RandomLotteryButton(main: "이번주는 내가 1등", sub: "랜덤으로 로또 번호 뽑기")
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
@@ -37,10 +39,16 @@ class MainViewController: UIViewController {
         configureUI()
         view.backgroundColor = myColor.greenColor
         collectionView.backgroundColor = myColor.greenColor
-        
-        logoImageView.image = UIImage(named: "메인")
     }
 
+}
+
+extension MainViewController {
+    @objc func randomLotteryTapped(_ sender: UIButton) {
+        let nextVC = RandomLotteryViewController()
+        nextVC.navigationItem.title = "로또 번호 추첨"
+        self.navigationController?.pushViewController(nextVC, animated: true)
+    }
 }
 
 extension MainViewController: UICollectionViewDelegateFlowLayout {
@@ -90,7 +98,6 @@ extension MainViewController: UICollectionViewDataSource {
         cell.subTitle.text = model[indexPath.item].subTitle
         return cell
     }
-    
 }
 
 
@@ -98,8 +105,9 @@ extension MainViewController: UICollectionViewDataSource {
 extension MainViewController {
     final private func configureUI() {
         configureCollectionView()
+        addTarget()
         setConstraints()
-        
+        setDetail()
     }
 
     final private func configureCollectionView() {
@@ -110,19 +118,24 @@ extension MainViewController {
         collectionView.dataSource = self
         view.addSubview(collectionView)
     }
-
+    
+    final private func addTarget() {
+        randomLottery.addTarget(self, action: #selector(randomLotteryTapped(_:)), for: .touchUpInside)
+    }
+    
+    final private func setDetail() {
+        logoImageView.image = UIImage(named: "메인")
+    }
     
     final private func setConstraints() {
-        [collectionView, logoImageView].forEach {
+        [collectionView, logoImageView, randomLottery].forEach {
             view.addSubview($0)
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
-        
-        
-        
+
         NSLayoutConstraint.activate([
             logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            logoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 70),
+            logoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
             logoImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             logoImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             logoImageView.heightAnchor.constraint(equalToConstant: CVCell.screenWidth),
@@ -131,8 +144,14 @@ extension MainViewController {
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -150),
             
+            randomLottery.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
+            randomLottery.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+//            randomLottery.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 130),
+//            randomLottery.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -130)
+            randomLottery.widthAnchor.constraint(equalToConstant: 280),
+            randomLottery.heightAnchor.constraint(equalToConstant: 90)
         ])
         
     }
