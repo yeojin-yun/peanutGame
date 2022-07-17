@@ -76,9 +76,13 @@ extension MovieViewController {
                 print(error.localizedDescription)
             }
         }
-        
+    }
+    
+    @objc func answerBtnTapped(_ sender: UIButton) {
         
     }
+    
+    
     func randomMovieTitle() {
         guard let randomTitle = MovieLine.shared.yearMovie.keys.randomElement() else { return }
         qAndAText = randomTitle
@@ -127,6 +131,12 @@ extension MovieViewController {
         }
         
         NSLayoutConstraint.activate([
+            movieImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            movieImageView.topAnchor.constraint(equalTo: mainImageView.topAnchor, constant: 30),
+            movieImageView.leadingAnchor.constraint(equalTo: mainImageView.leadingAnchor, constant: 60),
+            movieImageView.trailingAnchor.constraint(equalTo: mainImageView.trailingAnchor, constant: -60),
+            movieImageView.bottomAnchor.constraint(equalTo: mainImageView.bottomAnchor, constant: -30),
+            
             mainImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             mainImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
             mainImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30),
@@ -134,11 +144,6 @@ extension MovieViewController {
             mainImageView.heightAnchor.constraint(equalToConstant: 380),
             
             
-            movieImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            movieImageView.topAnchor.constraint(equalTo: mainImageView.topAnchor, constant: 30),
-            movieImageView.leadingAnchor.constraint(equalTo: mainImageView.leadingAnchor, constant: 60),
-            movieImageView.trailingAnchor.constraint(equalTo: mainImageView.trailingAnchor, constant: -60),
-            movieImageView.bottomAnchor.constraint(equalTo: mainImageView.bottomAnchor, constant: -30),
             
             answerLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             answerLabel.topAnchor.constraint(equalTo: movieImageView.bottomAnchor),
