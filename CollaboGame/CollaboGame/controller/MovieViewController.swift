@@ -16,6 +16,10 @@ class MovieViewController: UIViewController {
     
     var qAndAText = ""
     var year = 0
+    var currentAnswer = ""
+    var answerURL = ""
+    
+    var answer: MovieModel?
     var answerLabel = UILabel()
    
 //MARK: - LifeCycle
@@ -25,6 +29,7 @@ class MovieViewController: UIViewController {
         self.navigationItem.title = "그 영화 뭐니"
         movieImageView.isHidden = true
         setUI()
+        random()
     }
 //MARK: - Data
     private func loadImage(imageUrl: String) {
@@ -44,7 +49,9 @@ class MovieViewController: UIViewController {
             DispatchQueue.main.async {
                 print(data)
                 print(UIImage(data: data))
-                self.mainImageView.image = UIImage(data: data)
+                self.mainImageView.image = nil
+                self.mainImageView.answerImageView.image = UIImage(data: data)
+                
             }
         }
     }
@@ -53,21 +60,29 @@ class MovieViewController: UIViewController {
 //MARK: - Selector
 extension MovieViewController {
     @objc func startBtnTapped(_ sender: UIButton) {
-        self.randomMovieTitle()
-        APIManager.shared.requestMovie(word: qAndAText, year: year) { [weak self] response in
+        //self.randomMovieTitle()
+        self.random()
+        guard let name = answer?.name else { return }
+        guard let year = answer?.year else { return }
+        guard let country = answer?.country else { return }
+        
+        APIManager.shared.requestMovie(word: name, year: year, country: country) { [weak self] response in
             switch response {
             case .success(let data):
                 guard let weakSelf = self else { return }
                 switch sender.currentImage {
                 case ButtonImage.startImage:
                     self?.startButton.setImage(ButtonImage.nextQuestionImage, for: .normal)
-                    self?.mainImageView.quizTitle.text = MovieLine.shared.movieA[self?.qAndAText ?? "타짜"]
+                    self?.mainImageView.quizTitle.text = self?.answer?.saying
+                    self?.mainImageView.image = UIImage(named: "퀴즈배경")
+                    self?.mainImageView.answerImageView.image = nil
+                    self?.answerURL = data.items[0].image
                 case ButtonImage.nextQuestionImage:
-                    self?.mainImageView.quizTitle.text = MovieLine.shared.movieA[self?.qAndAText ?? "타짜"]
-                case ButtonImage.answerImage:
-//                    self?.mainImageView.image = nil
-//                    self?.mainImageView.quizTitle.text = ""
-                    self?.loadImage(imageUrl: data.items[0].image)
+                    self?.mainImageView.quizTitle.text = self?.answer?.saying
+                    self?.mainImageView.image = UIImage(named: "퀴즈배경")
+                    self?.mainImageView.answerImageView.image = nil
+                    self?.answerURL = data.items[0].image
+                    print(self?.answerURL)
                 default:
                     break
                 }
@@ -79,17 +94,27 @@ extension MovieViewController {
     }
     
     @objc func answerBtnTapped(_ sender: UIButton) {
+        print(self.answerURL)
+        self.loadImage(imageUrl: answerURL)
+    }
+    
+    func random() {
+        guard let random = MovieLine.shared.movieArray.randomElement() else { return }
+        answer = random
+        print(random)
         
     }
     
     
-    func randomMovieTitle() {
-        guard let randomTitle = MovieLine.shared.yearMovie.keys.randomElement() else { return }
-        qAndAText = randomTitle
-        year = MovieLine.shared.yearMovie[randomTitle] ?? 1
-        print(qAndAText)
-        print(year)
-    }
+//    func randomMovieTitle() {
+//        guard let randomTitle = MovieLine.shared.yearMovie.keys.randomElement() else { return }
+//        qAndAText = randomTitle
+//        year = MovieLine.shared.yearMovie[randomTitle] ?? 2016
+//        currentAnswer = MovieLine.shared.movieA[qAndAText] ?? "뭣이 중헌디?"
+//        print(qAndAText)
+//        print(year)
+//        print(currentAnswer)
+//    }
 }
 
 //MARK: - UI
@@ -102,7 +127,7 @@ extension MovieViewController {
     
     func addTarget() {
         startButton.addTarget(self, action: #selector(startBtnTapped(_:)), for: .touchUpInside)
-        rightAnswerButton.addTarget(self, action: #selector(startBtnTapped(_:)), for: .touchUpInside)
+        rightAnswerButton.addTarget(self, action: #selector(answerBtnTapped(_:)), for: .touchUpInside)
     }
     
     func setBasic() {

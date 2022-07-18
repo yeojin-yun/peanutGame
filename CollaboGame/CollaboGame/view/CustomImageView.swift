@@ -9,6 +9,7 @@ import UIKit
 
 class CustomImageView: UIImageView {
     var quizTitle = CustomLabel(title: "")
+    let answerImageView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -21,8 +22,10 @@ class CustomImageView: UIImageView {
     }
     func setLabel(title: String) {
         self.addSubview(quizTitle)
+        self.addSubview(answerImageView)
         quizTitle.numberOfLines = 0
         quizTitle.translatesAutoresizingMaskIntoConstraints = false
+        answerImageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             quizTitle.centerXAnchor.constraint(equalTo: self.centerXAnchor),
@@ -31,6 +34,11 @@ class CustomImageView: UIImageView {
             quizTitle.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 30),
             quizTitle.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -30),
             quizTitle.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -30),
+            
+            answerImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 30),
+            answerImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 30),
+            answerImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -30),
+            answerImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -30)
         ])
         quizTitle.text = title
     }

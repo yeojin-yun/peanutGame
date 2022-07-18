@@ -12,12 +12,12 @@ final class APIManager {
     static let shared = APIManager()
     private init() {}
     
-    func requestMovie(word: String, year: Int, completion: @escaping (Result<Movie, AFError>) -> Void) {
+    func requestMovie(word: String, year: Int, country: String, completion: @escaping (Result<Movie, AFError>) -> Void) {
         guard let url = URL(string: "https://openapi.naver.com/v1/search/movie.json") else { fatalError() }
         
         let parameter: Parameters = [
             "query": "\(word)",
-            "country" : "KR",
+            "country" : country,
             "yearfrom": year,
             "yearto" : year
         ]
