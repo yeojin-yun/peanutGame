@@ -36,6 +36,11 @@ class InitialLetterViewController: UIViewController {
         configureUI()
         view.backgroundColor = .white
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        timer.invalidate()
+    }
 
     
     @objc func update() {
@@ -52,8 +57,6 @@ class InitialLetterViewController: UIViewController {
 }
 
 extension InitialLetterViewController {
-    
-    
     @objc private func segmentValueChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:

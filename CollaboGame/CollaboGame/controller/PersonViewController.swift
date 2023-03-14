@@ -24,12 +24,58 @@ class PersonViewController: UIViewController {
     private var secondRemaining: Int = 0
     private let limitTime = 30 // 게임 시간 = 타이머 시간
 
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "그 사람 누구니"
         view.backgroundColor = UIColor.white
         configureUI()
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        timer.invalidate()
+    }
+}
+
+extension PersonViewController {
+    @objc func hintButtonTapped(_ sender: UIButton) {
+        hintLabel.text = Person.shared.getRandomPerson().getInitialLetter()
+    }
+    
+    @objc func startBtnTapped(_ sender: UIButton) {
+        switch sender.currentImage {
+        case ButtonImage.startImage:
+            sender.setImage(ButtonImage.nextQuestionImage, for: .normal)
+            mainImageView.image = UIImage(named: Person.shared.getRandomPerson())
+            mainImageView.layer.borderWidth = 2
+            hintLabel.text = "힌트가 필요할 때"
+            mainImageView.quizTitle.text = ""
+            timerLabel.isHidden = true
+            progressBar.isHidden = false
+            hintButton.setImage(ButtonImage.hintImage, for: .normal)
+            timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(update), userInfo: nil, repeats: true)
+            Person.shared.appendElements(elements: Person.shared.getRandomPerson())
+        case ButtonImage.nextQuestionImage:
+            mainImageView.image = UIImage(named: Person.shared.getRandomPerson())
+            mainImageView.layer.borderWidth = 2
+            hintButton.setImage(ButtonImage.hintImage, for: .normal)
+            hintLabel.text = "힌트가 필요할 때"
+            mainImageView.quizTitle.text = ""
+            timerLabel.isHidden = true
+            progressBar.isHidden = false
+            Person.shared.appendElements()
+        default:
+            break
+        }
+    }
+    
+    @objc func answerBtnTapped(_ sender: UIButton) {
+        mainImageView.image = UIImage(named: "메인배경")
+        mainImageView.quizTitle.text = Person.shared.getRandomPerson()
+        Person.shared.removeElements()
+    }
+    
     
     @objc func update() {
         if secondRemaining < limitTime {
@@ -42,81 +88,41 @@ class PersonViewController: UIViewController {
             showAlert()
         }
     }
-    
+}
+
+//MARK: -Function
+extension PersonViewController {
     func showAlert() {
         print("alert")
         let alert = UIAlertController(title: "게임 끝!", message: "게임을 다시 하시겠습니까?", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "다시하기", style: .default) { [weak self] _ in
-            self?.timer.invalidate()
-            self?.mainImageView.layer.borderWidth = 0
-            self?.startButton.setImage(ButtonImage.startImage, for: .normal)
-            self?.mainImageView.quizTitle.text = "인물 맞추기"
-            self?.mainImageView.image = UIImage(named: "퀴즈배경")
-            self?.secondRemaining = 0
-            self?.progressBar.progress = 0.0
-            self?.progressBar.isHidden = true
-            self?.timerLabel.isHidden = false
-            self?.hintLabel.text = ""
-            self?.hintButton.setImage(nil, for: .normal)
+        let okAction = UIAlertAction(title: "결과보기", style: .default) { [weak self] _ in
+            self?.reset()
         }
         let cancelAction = UIAlertAction(title: "취소", style: .cancel) { [weak self] _ in
-            self?.timer.invalidate()
-            self?.mainImageView.layer.borderWidth = 0
-            self?.startButton.setImage(ButtonImage.startImage, for: .normal)
-            self?.mainImageView.quizTitle.text = "인물 맞추기"
-            self?.mainImageView.image = UIImage(named: "퀴즈배경")
-            self?.secondRemaining = 0
-            self?.progressBar.progress = 0.0
-            self?.progressBar.isHidden = true
-            self?.timerLabel.isHidden = false
-            self?.hintLabel.text = ""
-            self?.hintButton.setImage(nil, for: .normal)
+            self?.reset()
         }
         alert.addAction(okAction)
         alert.addAction(cancelAction)
         present(alert, animated: true)
-    
-    }
-}
-
-extension PersonViewController {
-    @objc func hintButtonTapped(_ sender: UIButton) {
-        hintLabel.text = Person.shared.randomPerson.getInitialLetter()
     }
     
-    @objc func startBtnTapped(_ sender: UIButton) {
-        switch sender.currentImage {
-        case ButtonImage.startImage:
-            sender.setImage(ButtonImage.nextQuestionImage, for: .normal)
-            Person.shared.getRandomPerson()
-            mainImageView.image = UIImage(named: Person.shared.randomPerson)
-            mainImageView.layer.borderWidth = 2
-            
-            hintLabel.text = "힌트가 필요할 때"
-            mainImageView.quizTitle.text = ""
-            timerLabel.isHidden = true
-            progressBar.isHidden = false
-            hintButton.setImage(ButtonImage.hintImage, for: .normal)
-            timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(update), userInfo: nil, repeats: true)
-        case ButtonImage.nextQuestionImage:
-            Person.shared.getRandomPerson()
-            mainImageView.image = UIImage(named: Person.shared.randomPerson)
-            mainImageView.layer.borderWidth = 2
-            hintButton.setImage(ButtonImage.hintImage, for: .normal)
-            hintLabel.text = "힌트가 필요할 때"
-            mainImageView.quizTitle.text = ""
-            timerLabel.isHidden = true
-            progressBar.isHidden = false
-        default:
-            break
-        }
+    func reset() {
+        self.timer.invalidate()
+        self.mainImageView.layer.borderWidth = 0
+        self.startButton.setImage(ButtonImage.startImage, for: .normal)
+        self.mainImageView.quizTitle.text = "인물 맞추기"
+        self.mainImageView.image = UIImage(named: "퀴즈배경")
+        self.secondRemaining = 0
+        self.progressBar.progress = 0.0
+        self.progressBar.isHidden = true
+        self.timerLabel.isHidden = false
+        self.hintLabel.text = ""
+        self.hintButton.setImage(nil, for: .normal)
     }
     
-    @objc func answerBtnTapped(_ sender: UIButton) {
-        mainImageView.image = UIImage(named: "메인배경")
-        mainImageView.quizTitle.text = Person.shared.randomPerson
+    func showResult() {
+        
     }
-    
 }
 
 //MARK: -UI

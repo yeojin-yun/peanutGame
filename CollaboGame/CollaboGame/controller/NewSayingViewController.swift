@@ -25,6 +25,9 @@ final class NewSayingViewController: UIViewController {
     private var currentQuestion = ""
     private var currentAnswer = ""
     
+    private var answerArray: [String] = []
+    private var wrongAnswerArray: [String] = []
+    
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,16 +35,15 @@ final class NewSayingViewController: UIViewController {
         self.navigationItem.title = "그 말 뭐니"
         setUI()
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        timer.invalidate()
+    }
 }
 
 //MARK: - Selector
 extension NewSayingViewController {
-    
-    @objc
-    func answerButton(_ sender: UIButton) {
-        
-    }
-    
     @objc func buttonTapped(_ sender: UIButton) {
         
         switch sender.currentImage {
@@ -53,9 +55,11 @@ extension NewSayingViewController {
             answerLabel.isHidden = true
             getRandomNewSaying()
             mainImageView.quizTitle.text = currentQuestion
-            rightAnswerButton.isEnabled = false
+            rightAnswerButton.isEnabled = true
+            answerArray.append(currentAnswer)
         case ButtonImage.nextQuestionImage:
             getRandomNewSaying()
+            answerArray.append(currentAnswer)
             mainImageView.quizTitle.text = currentQuestion
             answerLabel.isHidden = true
             //timer.invalidate()
@@ -64,16 +68,12 @@ extension NewSayingViewController {
             answerLabel.isHidden = false
             answerLabel.text = currentQuestion
             mainImageView.quizTitle.text = currentAnswer
+            wrongAnswerArray.append(currentAnswer)
         default:
             break
         }
     }
     
-    func getRandomNewSaying() {
-        guard let randomQuestion = NewSaying.shared.newSayingA.keys.randomElement() else { return }
-        currentQuestion = randomQuestion
-        currentAnswer = NewSaying.shared.newSayingA[randomQuestion] ?? "낄 때 끼고 빠질 때 빠져라"
-    }
     
     @objc func update() {
         if secondRemaining < limitTime {
@@ -86,33 +86,52 @@ extension NewSayingViewController {
             timer.invalidate()
         }
     }
+}
+
+// MARK: - Function
+extension NewSayingViewController {
+    func getRandomNewSaying() {
+        guard let randomQuestion = NewSaying.shared.newSayingA.keys.randomElement() else { return }
+        currentQuestion = randomQuestion
+        currentAnswer = NewSaying.shared.newSayingA[randomQuestion] ?? "낄 때 끼고 빠질 때 빠져라"
+    }
     
     func showAlert() {
         print("alert")
         let alert = UIAlertController(title: "게임 끝!", message: "결과를 확인하시겠습니까?", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "결과보기", style: .default) { [weak self] _ in
-            self?.answerLabel.text = ""
-            self?.timer.invalidate()
-            self?.startButton.setImage(ButtonImage.startImage, for: .normal)
-            self?.mainImageView.quizTitle.text = "신조어"
-            self?.secondRemaining = 0
-            self?.progressBar.progress = 0.0
-            self?.progressBar.isHidden = true
-            self?.timerLabel.isHidden = false
+            self?.reset()
+            self?.showResult()
         }
         let cancelAction = UIAlertAction(title: "다시하기", style: .cancel) { [weak self] _ in
-            self?.startButton.setTitle("시작하기", for: .normal)
-            self?.timer.invalidate()
-            self?.mainImageView.quizTitle.text = "신조어"
-            self?.secondRemaining = 0
-            self?.startButton.setImage(ButtonImage.startImage, for: .normal)
-            self?.progressBar.progress = 0.0
-            self?.answerLabel.text = ""
-            self?.progressBar.isHidden = true
-            self?.timerLabel.isHidden = false
+            self?.reset()
+            self?.answerArray = []
+            self?.wrongAnswerArray = []
         }
         alert.addAction(okAction)
         alert.addAction(cancelAction)
+        present(alert, animated: true)
+    }
+    
+    func reset() {
+        self.timer.invalidate()
+        self.mainImageView.quizTitle.text = "신조어"
+        self.secondRemaining = 0
+        self.progressBar.progress = 0.0
+        self.answerLabel.text = ""
+        self.startButton.setImage(ButtonImage.startImage, for: .normal)
+        self.progressBar.isHidden = true
+        self.timerLabel.isHidden = false
+    }
+    
+    func showResult() {
+        let answerCount = (self.answerArray.count ?? 0) - (self.wrongAnswerArray.count ?? 0)
+        let alert = UIAlertController(title: "결과", message: "전체 \(self.answerArray.count)개 문제 중\n\(answerCount)개 정답", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "결과에 승복", style: .default) { _ in
+            self.answerArray = []
+            self.wrongAnswerArray = []
+        }
+        alert.addAction(okAction)
         present(alert, animated: true)
     }
 }
@@ -181,5 +200,4 @@ extension NewSayingViewController {
             
         ])
     }
-    
 }

@@ -16,9 +16,7 @@
 		0C50D3322827A69C001BBB18 /* InitialLetterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C50D3312827A69C001BBB18 /* InitialLetterViewController.swift */; };
 		0C50D3342827A6A8001BBB18 /* MovieViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C50D3332827A6A8001BBB18 /* MovieViewController.swift */; };
 		0C50D3362827A6B1001BBB18 /* NewSayingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C50D3352827A6B1001BBB18 /* NewSayingViewController.swift */; };
-		0C50D3382827A6B9001BBB18 /* OldSayingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C50D3372827A6B9001BBB18 /* OldSayingViewController.swift */; };
 		0C50D33A2827A6C5001BBB18 /* PersonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C50D3392827A6C5001BBB18 /* PersonViewController.swift */; };
-		0C50D33C2827A6D6001BBB18 /* SceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C50D33B2827A6D6001BBB18 /* SceneViewController.swift */; };
 		0C50D344283263C7001BBB18 /* InitialQuiz.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C50D343283263C7001BBB18 /* InitialQuiz.swift */; };
 		0C50D346283263F3001BBB18 /* InitialResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C50D345283263F3001BBB18 /* InitialResultViewController.swift */; };
 		0C5362082847558F00BAB204 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0C5362072847558F00BAB204 /* Pretendard-Bold.otf */; };
@@ -61,9 +59,7 @@
 		0C50D3312827A69C001BBB18 /* InitialLetterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialLetterViewController.swift; sourceTree = "<group>"; };
 		0C50D3332827A6A8001BBB18 /* MovieViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieViewController.swift; sourceTree = "<group>"; };
 		0C50D3352827A6B1001BBB18 /* NewSayingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSayingViewController.swift; sourceTree = "<group>"; };
-		0C50D3372827A6B9001BBB18 /* OldSayingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldSayingViewController.swift; sourceTree = "<group>"; };
 		0C50D3392827A6C5001BBB18 /* PersonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonViewController.swift; sourceTree = "<group>"; };
-		0C50D33B2827A6D6001BBB18 /* SceneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneViewController.swift; sourceTree = "<group>"; };
 		0C50D343283263C7001BBB18 /* InitialQuiz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialQuiz.swift; sourceTree = "<group>"; };
 		0C50D345283263F3001BBB18 /* InitialResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialResultViewController.swift; sourceTree = "<group>"; };
 		0C5362072847558F00BAB204 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
@@ -138,8 +134,6 @@
 				0C50D345283263F3001BBB18 /* InitialResultViewController.swift */,
 				0C50D3352827A6B1001BBB18 /* NewSayingViewController.swift */,
 				0C50D3332827A6A8001BBB18 /* MovieViewController.swift */,
-				0C50D3372827A6B9001BBB18 /* OldSayingViewController.swift */,
-				0C50D33B2827A6D6001BBB18 /* SceneViewController.swift */,
 				0C93F5F1287DBC60008A6EAE /* RandomLotteryViewController.swift */,
 			);
 			path = controller;
@@ -310,7 +304,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0CF2781F28450C3F00AFC330 /* InitialTableViewCell.swift in Sources */,
-				0C50D33C2827A6D6001BBB18 /* SceneViewController.swift in Sources */,
 				0C7562F52830D83200620B46 /* CustomCollectionViewCell.swift in Sources */,
 				50DA72DD2827A2FA0073E706 /* AppDelegate.swift in Sources */,
 				505CFE14283A0C48001325FC /* Movie.swift in Sources */,
@@ -318,7 +311,6 @@
 				0C53A3372839FFA30080B38C /* APIManager.swift in Sources */,
 				0C26EB622830C12D0071E8B2 /* CustomColor.swift in Sources */,
 				0C50D3342827A6A8001BBB18 /* MovieViewController.swift in Sources */,
-				0C50D3382827A6B9001BBB18 /* OldSayingViewController.swift in Sources */,
 				509588A62830F18700404DFD /* NewSaying.swift in Sources */,
 				0C26EB602830C0E40071E8B2 /* CustomButton.swift in Sources */,
 				0C7562F72830DE2900620B46 /* Model.swift in Sources */,
