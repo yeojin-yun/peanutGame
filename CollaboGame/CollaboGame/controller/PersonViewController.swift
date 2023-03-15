@@ -56,6 +56,8 @@ extension PersonViewController {
             hintButton.setImage(ButtonImage.hintImage, for: .normal)
             timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(update), userInfo: nil, repeats: true)
             Person.shared.appendElements(elements: Person.shared.getRandomPerson())
+            
+            
         case ButtonImage.nextQuestionImage:
             mainImageView.image = UIImage(named: Person.shared.getRandomPerson())
             mainImageView.layer.borderWidth = 2
@@ -121,7 +123,7 @@ extension PersonViewController {
     }
     
     func showResult() {
-        
+        let alert = UIAlertController(title: "결과", message: "", preferredStyle: .alert)
     }
 }
 
