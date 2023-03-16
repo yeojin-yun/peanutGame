@@ -22,7 +22,7 @@ class PersonViewController: UIViewController {
     
     private var timer = Timer()
     private var secondRemaining: Int = 0
-    private let limitTime = 30 // 게임 시간 = 타이머 시간
+    private let limitTime = 10 // 게임 시간 = 타이머 시간
 
 
     override func viewDidLoad() {
@@ -40,14 +40,15 @@ class PersonViewController: UIViewController {
 
 extension PersonViewController {
     @objc func hintButtonTapped(_ sender: UIButton) {
-        hintLabel.text = Person.shared.getRandomPerson().getInitialLetter()
+        hintLabel.text = Person.shared.answer.getInitialLetter()
     }
     
     @objc func startBtnTapped(_ sender: UIButton) {
         switch sender.currentImage {
         case ButtonImage.startImage:
             sender.setImage(ButtonImage.nextQuestionImage, for: .normal)
-            mainImageView.image = UIImage(named: Person.shared.getRandomPerson())
+            Person.shared.getRandomPerson()
+            mainImageView.image = UIImage(named: Person.shared.answer)
             mainImageView.layer.borderWidth = 2
             hintLabel.text = "힌트가 필요할 때"
             mainImageView.quizTitle.text = ""
@@ -55,18 +56,19 @@ extension PersonViewController {
             progressBar.isHidden = false
             hintButton.setImage(ButtonImage.hintImage, for: .normal)
             timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(update), userInfo: nil, repeats: true)
-            Person.shared.appendElements(elements: Person.shared.getRandomPerson())
+            Person.shared.appendElements(elements: Person.shared.answer)
             
             
         case ButtonImage.nextQuestionImage:
-            mainImageView.image = UIImage(named: Person.shared.getRandomPerson())
+            Person.shared.getRandomPerson()
+            mainImageView.image = UIImage(named: Person.shared.answer)
             mainImageView.layer.borderWidth = 2
             hintButton.setImage(ButtonImage.hintImage, for: .normal)
             hintLabel.text = "힌트가 필요할 때"
             mainImageView.quizTitle.text = ""
             timerLabel.isHidden = true
             progressBar.isHidden = false
-            Person.shared.appendElements()
+            Person.shared.appendElements(elements: Person.shared.answer)
         default:
             break
         }
@@ -74,8 +76,8 @@ extension PersonViewController {
     
     @objc func answerBtnTapped(_ sender: UIButton) {
         mainImageView.image = UIImage(named: "메인배경")
-        mainImageView.quizTitle.text = Person.shared.getRandomPerson()
-        Person.shared.removeElements()
+        mainImageView.quizTitle.text = Person.shared.answer
+        Person.shared.removeElements(elements: Person.shared.answer)
     }
     
     
@@ -99,6 +101,7 @@ extension PersonViewController {
         let alert = UIAlertController(title: "게임 끝!", message: "게임을 다시 하시겠습니까?", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "결과보기", style: .default) { [weak self] _ in
             self?.reset()
+            self?.showResult()
         }
         let cancelAction = UIAlertAction(title: "취소", style: .cancel) { [weak self] _ in
             self?.reset()
@@ -123,7 +126,14 @@ extension PersonViewController {
     }
     
     func showResult() {
-        let alert = UIAlertController(title: "결과", message: "", preferredStyle: .alert)
+        let answerCount = (Person.shared.questionArray.count ?? 0) - (Person.shared.wrongAnswerArray.count ?? 0)
+        let alert = UIAlertController(title: "결과", message: "전체 \(Person.shared.questionArray.count)개 문제 중\n\(answerCount)개 정답", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "결과에 승복", style: .default) { _ in
+            Person.shared.questionArray = []
+            Person.shared.wrongAnswerArray = []
+        }
+        alert.addAction(okAction)
+        present(alert, animated: true)
     }
 }
 

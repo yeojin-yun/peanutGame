@@ -20,7 +20,7 @@ final class NewSayingViewController: UIViewController {
     private var timer = Timer()
     private var secondRemaining: Int = 0
     
-    private let limitTime = 30 // 게임 시간 = 타이머 시간
+    private let limitTime = 10 // 게임 시간 = 타이머 시간
     
     private var currentQuestion = ""
     private var currentAnswer = ""

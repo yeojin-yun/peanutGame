@@ -10,6 +10,9 @@ import UIKit
 class RandomLotteryViewController: UIViewController {
     let infoLabel = UILabel()
     
+    let originalArray: Array<Int> = Array<Int>(1...45)
+    var selectedArray: Array<Int> = []
+    
     let firstView = StackView()
     let secondView = StackView()
     let thirdView = StackView()
@@ -23,55 +26,86 @@ class RandomLotteryViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         setUI()
+        
     }
     
     @objc func firstBtnTapped(_ sender: UIButton) {
+        getRandom()
         [firstView].forEach {
-            $0.firstNumber.text = "\(getRandom())"
-            $0.secondNumber.text = "\(getRandom())"
-            $0.thirdNumber.text = "\(getRandom())"
-            $0.forthNumber.text = "\(getRandom())"
-            $0.fifthNumber.text = "\(getRandom())"
+//            $0.firstNumber.text = "\(getRandom()[0])"
+//            $0.secondNumber.text = "\(getRandom()[1])"
+//            $0.thirdNumber.text = "\(getRandom()[2])"
+//            $0.forthNumber.text = "\(getRandom()[3])"
+//            $0.fifthNumber.text = "\(getRandom()[4])"
+            $0.firstNumber.text = "\(selectedArray[0])"
+            $0.secondNumber.text = "\(selectedArray[1])"
+            $0.thirdNumber.text = "\(selectedArray[2])"
+            $0.forthNumber.text = "\(selectedArray[3])"
+            $0.fifthNumber.text = "\(selectedArray[4])"
         }
     }
     
     @objc func secondBtnTapped(_ sender: UIButton) {
+        getRandom()
         [secondView].forEach {
-            $0.firstNumber.text = "\(getRandom())"
-            $0.secondNumber.text = "\(getRandom())"
-            $0.thirdNumber.text = "\(getRandom())"
-            $0.forthNumber.text = "\(getRandom())"
-            $0.fifthNumber.text = "\(getRandom())"
+//            $0.firstNumber.text = "\(getRandom()[0])"
+//            $0.secondNumber.text = "\(getRandom()[1])"
+//            $0.thirdNumber.text = "\(getRandom()[2])"
+//            $0.forthNumber.text = "\(getRandom()[3])"
+//            $0.fifthNumber.text = "\(getRandom()[4])"
+            $0.firstNumber.text = "\(selectedArray[0])"
+            $0.secondNumber.text = "\(selectedArray[1])"
+            $0.thirdNumber.text = "\(selectedArray[2])"
+            $0.forthNumber.text = "\(selectedArray[3])"
+            $0.fifthNumber.text = "\(selectedArray[4])"
         }
     }
     
     @objc func thirdBtnTapped(_ sender: UIButton) {
+        getRandom()
         [thirdView].forEach {
-            $0.firstNumber.text = "\(getRandom())"
-            $0.secondNumber.text = "\(getRandom())"
-            $0.thirdNumber.text = "\(getRandom())"
-            $0.forthNumber.text = "\(getRandom())"
-            $0.fifthNumber.text = "\(getRandom())"
+//            $0.firstNumber.text = "\(getRandom()[0])"
+//            $0.secondNumber.text = "\(getRandom()[1])"
+//            $0.thirdNumber.text = "\(getRandom()[2])"
+//            $0.forthNumber.text = "\(getRandom()[3])"
+//            $0.fifthNumber.text = "\(getRandom()[4])"
+            $0.firstNumber.text = "\(selectedArray[0])"
+            $0.secondNumber.text = "\(selectedArray[1])"
+            $0.thirdNumber.text = "\(selectedArray[2])"
+            $0.forthNumber.text = "\(selectedArray[3])"
+            $0.fifthNumber.text = "\(selectedArray[4])"
         }
     }
     
     @objc func forthBtnTapped(_ sender: UIButton) {
+        getRandom()
         [forthView].forEach {
-            $0.firstNumber.text = "\(getRandom())"
-            $0.secondNumber.text = "\(getRandom())"
-            $0.thirdNumber.text = "\(getRandom())"
-            $0.forthNumber.text = "\(getRandom())"
-            $0.fifthNumber.text = "\(getRandom())"
+//            $0.firstNumber.text = "\(getRandom()[0])"
+//            $0.secondNumber.text = "\(getRandom()[1])"
+//            $0.thirdNumber.text = "\(getRandom()[2])"
+//            $0.forthNumber.text = "\(getRandom()[3])"
+//            $0.fifthNumber.text = "\(getRandom()[4])"
+            $0.firstNumber.text = "\(selectedArray[0])"
+            $0.secondNumber.text = "\(selectedArray[1])"
+            $0.thirdNumber.text = "\(selectedArray[2])"
+            $0.forthNumber.text = "\(selectedArray[3])"
+            $0.fifthNumber.text = "\(selectedArray[4])"
         }
     }
     
     @objc func fifthBtnTapped(_ sender: UIButton) {
+        getRandom()
         [fifthView].forEach {
-            $0.firstNumber.text = "\(getRandom())"
-            $0.secondNumber.text = "\(getRandom())"
-            $0.thirdNumber.text = "\(getRandom())"
-            $0.forthNumber.text = "\(getRandom())"
-            $0.fifthNumber.text = "\(getRandom())"
+//            $0.firstNumber.text = "\(getRandom()[0])"
+//            $0.secondNumber.text = "\(getRandom()[1])"
+//            $0.thirdNumber.text = "\(getRandom()[2])"
+//            $0.forthNumber.text = "\(getRandom()[3])"
+//            $0.fifthNumber.text = "\(getRandom()[4])"
+            $0.firstNumber.text = "\(selectedArray[0])"
+            $0.secondNumber.text = "\(selectedArray[1])"
+            $0.thirdNumber.text = "\(selectedArray[2])"
+            $0.forthNumber.text = "\(selectedArray[3])"
+            $0.fifthNumber.text = "\(selectedArray[4])"
         }
     }
     
@@ -162,8 +196,15 @@ extension RandomLotteryViewController {
         }
     }
     
-    func getRandom() -> Int {
-        return Int.random(in: 1...45)
+    func getRandom() {
+        //1...45까지 숫자 중 중복되지 않는 숫자 5개를 뽑아야 함
+        selectedArray.removeAll()
+        var setBeforeArray: Set<Int> = []
+
+        repeat {
+            setBeforeArray.update(with: originalArray.randomElement() ?? 1)
+        } while setBeforeArray.count < 6
+        selectedArray = Array(setBeforeArray) 
     }
     
     final func setLayout() {
